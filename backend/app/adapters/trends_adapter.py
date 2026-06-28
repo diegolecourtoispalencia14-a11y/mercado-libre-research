@@ -26,3 +26,23 @@ class TrendsAdapter:
             return avg
         except Exception:
             return None
+
+    def get_timeline(self, keyword: str) -> list:
+        cache_key = f"trends_timeline:{keyword}"
+        cached = cache_get(cache_key)
+        if cached is not None:
+            return cached
+
+        try:
+            pytrends = TrendReq(hl="es-MX", tz=360)
+            pytrends.build_payload([keyword], timeframe="today 12-m", geo="MX")
+            df = pytrends.interest_over_time()
+
+            if df.empty or keyword not in df.columns:
+                return []
+
+            timeline = [float(v) for v in df[keyword].tolist()]
+            cache_set(cache_key, timeline, CACHE_TTL)
+            return timeline
+        except Exception:
+            return []

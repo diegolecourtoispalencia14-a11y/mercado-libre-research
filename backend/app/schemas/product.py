@@ -22,3 +22,4 @@ class SearchResponse(BaseModel):
     keyword: str
     products: list[ProductScore]
     trend_available: bool
+    analysis_id: Optional[int] = None

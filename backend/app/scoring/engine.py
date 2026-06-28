@@ -24,6 +24,8 @@ def _raw_score(sold_quantity: int | None, trend_interest: float | None,
     return (demand * trend) / (competition * math.log1p(price_comp))
 
 def _min_max_normalize(values: list[float], target_min=1.0, target_max=10.0) -> list[float]:
+    if not values:
+        return []
     lo, hi = min(values), max(values)
     if lo == hi:
         return [5.0] * len(values)

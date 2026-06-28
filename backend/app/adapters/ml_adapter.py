@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import time
 import httpx
-from datetime import datetime, timezone
+from datetime import datetime
 from app.adapters.base import BaseAdapter
 from app.cache import cache_get, cache_set
 
@@ -43,10 +43,16 @@ class MLAdapter(BaseAdapter):
         if cached is not None:
             return cached
 
-        data = _get_with_retry(
-            f"{ML_BASE}/sites/{self.site_id}/search",
-            params={"q": keyword, "limit": limit},
-        )
+        try:
+            data = _get_with_retry(
+                f"{ML_BASE}/sites/{self.site_id}/search",
+                params={"q": keyword, "limit": limit},
+            )
+        except Exception:
+            stale = cache_get(cache_key)
+            if stale is not None:
+                return stale
+            raise
 
         results = []
         for item in data.get("results", []):
@@ -73,7 +79,14 @@ class MLAdapter(BaseAdapter):
         if cached is not None:
             return cached
 
-        item = _get_with_retry(f"{ML_BASE}/items/{ml_id}")
+        try:
+            item = _get_with_retry(f"{ML_BASE}/items/{ml_id}")
+        except Exception:
+            stale = cache_get(cache_key)
+            if stale is not None:
+                return stale
+            raise
+
         category_id = item.get("category_id", "")
         num_sellers = self._get_category_seller_count(category_id)
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import csv
 import io
-from typing import List, Optional
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse

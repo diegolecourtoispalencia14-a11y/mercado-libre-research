@@ -1,6 +1,15 @@
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch, MagicMock
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
+from unittest.mock import patch
+from app.main import app as fastapi_app
+from app.database import get_db, Base
+import app.models.product  # noqa: F401 — registers Product table in Base.metadata
+import app.models.analysis  # noqa: F401 — registers Analysis/SavedReport tables
+
+TEST_DB_URL = "sqlite:///:memory:"
 
 ML_PRODUCTS = [
     {"ml_id": "MLM1", "title": "Auriculares BT", "price": 299.0,
@@ -16,8 +25,25 @@ ML_PRODUCTS = [
 
 @pytest.fixture
 def client():
-    from app.main import app
-    return TestClient(app)
+    engine = create_engine(
+        TEST_DB_URL,
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    Base.metadata.create_all(engine)
+    TestingSession = sessionmaker(bind=engine)
+
+    def override_get_db():
+        db = TestingSession()
+        try:
+            yield db
+        finally:
+            db.close()
+
+    fastapi_app.dependency_overrides[get_db] = override_get_db
+    yield TestClient(fastapi_app)
+    fastapi_app.dependency_overrides.clear()
+    Base.metadata.drop_all(engine)
 
 
 def test_search_returns_scored_products(client):

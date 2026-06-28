@@ -1,4 +1,3 @@
-import pytest
 from datetime import datetime, timezone, timedelta
 from app.scoring.engine import compute_scores, compute_estimated_monthly_sales
 

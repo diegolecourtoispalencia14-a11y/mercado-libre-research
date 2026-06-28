@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import SearchBar from '../components/SearchBar'
 import ProductList from '../components/ProductList'
 import { searchProducts } from '../api/search'
+import { saveReport } from '../api/reports'
 
 export default function SearchPage() {
   const navigate = useNavigate()
@@ -10,6 +11,7 @@ export default function SearchPage() {
   const [results, setResults] = useState(null)
   const [error, setError] = useState(null)
   const [selectedForCompare, setSelectedForCompare] = useState([])
+  const [analysisId, setAnalysisId] = useState(null)
 
   async function handleSearch(q) {
     setLoading(true)
@@ -18,6 +20,7 @@ export default function SearchPage() {
     try {
       const data = await searchProducts(q)
       setResults(data)
+      setAnalysisId(data.analysis_id ?? null)
     } catch (e) {
       setError(e.message)
     } finally {
@@ -49,14 +52,30 @@ export default function SearchPage() {
                 </span>
               )}
             </p>
-            {selectedForCompare.length >= 2 && (
-              <button
-                onClick={() => navigate('/compare', { state: { ids: selectedForCompare } })}
-                className="bg-purple-600 text-white px-4 py-1.5 rounded text-sm"
-              >
-                Comparar {selectedForCompare.length} productos
-              </button>
-            )}
+            <div className="flex gap-2">
+              {selectedForCompare.length >= 2 && (
+                <button
+                  onClick={() => navigate('/compare', { state: { ids: selectedForCompare } })}
+                  className="bg-purple-600 text-white px-4 py-1.5 rounded text-sm"
+                >
+                  Comparar {selectedForCompare.length} productos
+                </button>
+              )}
+              {analysisId && (
+                <button
+                  onClick={async () => {
+                    const name = prompt('Nombre para este reporte:')
+                    if (name) {
+                      await saveReport(analysisId, name)
+                      alert('Reporte guardado')
+                    }
+                  }}
+                  className="bg-green-600 text-white px-4 py-1.5 rounded text-sm"
+                >
+                  Guardar análisis
+                </button>
+              )}
+            </div>
           </div>
           <ProductList
             products={results.products}

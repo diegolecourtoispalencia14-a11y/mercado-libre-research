@@ -17,6 +17,7 @@ def _to_detail(
     scored: dict,
     trend_interest: Optional[float],
     trend_available: bool,
+    trend_timeline: Optional[list] = None,
 ) -> ProductDetailResponse:
     listing_dt = None
     listing_date_str = p.get("listing_date")
@@ -44,7 +45,7 @@ def _to_detail(
         competition_score=scored["competition_score"],
         trend_score=scored.get("trend_score"),
         trend_available=trend_available,
-        trend_timeline=[],
+        trend_timeline=trend_timeline or [],
         description=p.get("description", ""),
     )
 
@@ -56,10 +57,11 @@ def analyze(ml_product_id: str):
 
     product = ml.get_product(ml_product_id)
     trend_interest = trends.get_interest(product["title"].split()[0])
+    trend_timeline = trends.get_timeline(product["title"].split()[0])
     trend_available = trend_interest is not None
 
     product["trend_interest"] = trend_interest
     scored_list = compute_scores([product])
     scored = scored_list[0]
 
-    return _to_detail(product, scored, trend_interest, trend_available)
+    return _to_detail(product, scored, trend_interest, trend_available, trend_timeline)
