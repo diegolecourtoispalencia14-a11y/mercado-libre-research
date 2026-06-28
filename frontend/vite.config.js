@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': { target: 'http://localhost:8000', rewrite: path => path.replace(/^\/api/, '') }
+      '/api': { target: `http://${process.env.VITE_API_HOST || 'localhost'}:8000`, rewrite: path => path.replace(/^\/api/, '') }
     }
   },
   test: {
