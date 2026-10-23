@@ -47,6 +47,13 @@ def _to_detail(
         trend_available=trend_available,
         trend_timeline=trend_timeline or [],
         description=p.get("description", ""),
+        leverage_score=scored.get("leverage_score"),
+        is_archetype=scored.get("is_archetype", False),
+        permalink=p.get("permalink") or (
+            f"https://articulo.mercadolibre.com.mx/{p['ml_id']}"
+            if p["ml_id"].startswith("MLM")
+            else f"https://listado.mercadolibre.com.mx/{p['title']}"
+        ),
     )
 
 

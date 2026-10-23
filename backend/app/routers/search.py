@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Optional
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.adapters.ml_adapter import MLAdapter
@@ -11,8 +11,8 @@ from app.adapters.trends_adapter import TrendsAdapter
 from app.database import get_db
 from app.models.analysis import Analysis, AnalysisProduct
 from app.models.product import Product as ProductModel
-from app.scoring.engine import compute_scores, compute_estimated_monthly_sales
-from app.schemas.product import ProductScore, SearchResponse
+from app.scoring.engine import compute_scores, compute_estimated_monthly_sales, detect_market_gaps
+from app.schemas.product import ProductScore, SearchResponse, MarketGap
 
 router = APIRouter()
 
@@ -22,7 +22,13 @@ def search(q: str, category: Optional[str] = None, limit: int = 50, db: Session 
     ml = MLAdapter()
     trends = TrendsAdapter()
 
-    raw_products = ml.search(q, limit=limit)
+    try:
+        raw_products = ml.search(q, limit=limit)
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc))
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail=f"ML API error: {exc}")
+
     trend_interest = trends.get_interest(q)
     trend_available = trend_interest is not None
 
@@ -107,6 +113,24 @@ def search(q: str, category: Optional[str] = None, limit: int = 50, db: Session 
             competition_score=p["competition_score"],
             trend_score=p.get("trend_score"),
             trend_available=trend_available,
+            leverage_score=p.get("leverage_score"),
+            is_archetype=p.get("is_archetype", False),
+            permalink=p.get("permalink") or (
+                f"https://articulo.mercadolibre.com.mx/{p['ml_id']}"
+                if p["ml_id"].startswith("MLM")
+                else f"https://listado.mercadolibre.com.mx/{p['title']}"
+            ),
         ))
 
-    return SearchResponse(keyword=q, products=products, trend_available=trend_available, analysis_id=analysis.id)
+    raw_gaps = detect_market_gaps(raw_products, trend_interest)
+    market_gaps = [MarketGap(**g) for g in raw_gaps]
+    is_simulation = any(p.get("is_simulated", False) for p in raw_products)
+
+    return SearchResponse(
+        keyword=q,
+        products=products,
+        trend_available=trend_available,
+        analysis_id=analysis.id,
+        market_gaps=market_gaps,
+        is_simulation=is_simulation,
+    )

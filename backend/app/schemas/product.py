@@ -16,6 +16,19 @@ class ProductScore(BaseModel):
     competition_score: float
     trend_score: Optional[float]
     trend_available: bool
+    leverage_score: Optional[float] = None
+    is_archetype: bool = False
+    permalink: Optional[str] = None
+
+
+class MarketGap(BaseModel):
+    price_min: float
+    price_max: float
+    midpoint_price: float
+    opportunity_score: float
+    gap_type: str
+    description: str
+    recommendation: str
 
 
 class SearchResponse(BaseModel):
@@ -23,3 +36,5 @@ class SearchResponse(BaseModel):
     products: list[ProductScore]
     trend_available: bool
     analysis_id: Optional[int] = None
+    market_gaps: list[MarketGap] = []
+    is_simulation: bool = False

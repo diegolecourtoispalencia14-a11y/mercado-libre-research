@@ -16,13 +16,29 @@ export default function DetailPage() {
       .finally(() => setLoading(false))
   }, [mlId])
 
-  if (loading) return <div className="p-8 text-center text-gray-500">Analizando producto...</div>
-  if (error) return <div className="p-8 text-red-600">{error}</div>
+  if (loading) return (
+    <div className="max-w-5xl mx-auto px-4 py-20 text-center">
+      <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-flamante-flame border-t-transparent mb-4" />
+      <div className="text-white/60 font-mono text-sm">Analizando métricas algorítmicas y unit economics...</div>
+    </div>
+  )
+  if (error) return (
+    <div className="max-w-5xl mx-auto px-4 py-12">
+      <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl p-4 text-xs font-mono">
+        [ERROR] {error}
+      </div>
+    </div>
+  )
   if (!detail) return null
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-      <Link to="/" className="text-blue-600 text-sm">← Volver a resultados</Link>
+    <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+      <Link
+        to="/"
+        className="inline-flex items-center gap-2 text-xs font-mono text-white/60 hover:text-flamante-flame transition-colors bg-white/5 hover:bg-white/10 px-3.5 py-1.5 rounded-lg border border-white/10"
+      >
+        ← Volver a resultados
+      </Link>
       <ProductDetail detail={detail} />
     </div>
   )

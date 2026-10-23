@@ -53,3 +53,39 @@ def test_estimated_monthly_sales_none_when_no_quantity():
 def test_estimated_monthly_sales_none_when_no_date():
     result = compute_estimated_monthly_sales(300, None)
     assert result is None
+
+def test_leverage_scores_and_archetypes():
+    from app.scoring.engine import compute_leverage_scores
+    products = [
+        {"sold_quantity": 5000, "price": 120.0, "num_sellers": 3, "trend_interest": 90},
+        {"sold_quantity": 20, "price": 2500.0, "num_sellers": 1, "trend_interest": 40},
+        {"sold_quantity": 100, "price": 500.0, "num_sellers": 40, "trend_interest": 50},
+        {"sold_quantity": 110, "price": 510.0, "num_sellers": 42, "trend_interest": 50},
+        {"sold_quantity": 105, "price": 495.0, "num_sellers": 39, "trend_interest": 50},
+    ]
+    scores, archetypes = compute_leverage_scores(products)
+    assert len(scores) == 5
+    assert len(archetypes) == 5
+    for s in scores:
+        assert 1.0 <= s <= 10.0
+    # Extreme/outlier listings (high volume budget or high price) should have higher leverage
+    assert scores[0] >= scores[2] or scores[1] >= scores[2]
+    assert any(archetypes)
+
+def test_detect_market_gaps():
+    from app.scoring.engine import detect_market_gaps
+    products = [
+        {"price": 100.0, "sold_quantity": 500},
+        {"price": 120.0, "sold_quantity": 400},
+        {"price": 150.0, "sold_quantity": 300},
+        {"price": 1500.0, "sold_quantity": 50},
+        {"price": 1800.0, "sold_quantity": 40},
+    ]
+    gaps = detect_market_gaps(products, trend_interest=75.0)
+    assert len(gaps) >= 1
+    gap = gaps[0]
+    assert gap["price_min"] == 150.0
+    assert gap["price_max"] == 1500.0
+    assert gap["midpoint_price"] == 825.0
+    assert 5.0 <= gap["opportunity_score"] <= 10.0
+    assert "Vacío de competencia" in gap["description"]

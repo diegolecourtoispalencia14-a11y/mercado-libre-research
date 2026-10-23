@@ -21,6 +21,9 @@ class ProductDetailResponse(BaseModel):
     trend_available: bool
     trend_timeline: List[float]
     description: str
+    leverage_score: Optional[float] = None
+    is_archetype: bool = False
+    permalink: Optional[str] = None
 
 
 class CompareRequest(BaseModel):
