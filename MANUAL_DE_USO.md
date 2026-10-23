@@ -55,10 +55,11 @@ Al lado del contador de productos encontrados verás el botón **"Filtrar arquet
 
 ## 🔗 5. Ver el Producto Directamente en Mercado Libre
 
-Para inspeccionar la publicación real en la tienda oficial de Mercado Libre:
+Para inspeccionar las publicaciones reales y vendedores activos en la tienda oficial de Mercado Libre México:
 
-* **Desde la lista de resultados:** Cada fila incluye un enlace rápido que dice **`Ver en ML ↗`** para abrir la publicación en una pestaña nueva sin salir de la búsqueda.
-* **Desde la ficha detallada:** Al dar clic en cualquier producto, verás en el encabezado un botón destacado que dice **"Ver publicación en Mercado Libre ↗"**. Al hacer clic podrás ver las fotos en alta resolución, preguntas de los clientes y reputación del vendedor.
+* **Desde la lista de resultados:** Cada fila incluye un enlace rápido que dice **`Ver en ML ↗`**. Al dar clic, se abre una pestaña con las ofertas y vendedores que tienen inventario activo y entrega inmediata hoy mismo.
+* **Desde la ficha detallada:** Al hacer clic en cualquier producto, verás en el encabezado el botón principal **"Ver ofertas activas en Mercado Libre ↗"**. Esto te llevará a todos los vendedores compitiendo con stock en tiempo real. Si el artículo cuenta con código de catálogo oficial (`MLM...`), también verás el botón complementario **"Ficha Catálogo"** para consultar las especificaciones técnicas del producto.
+* **Garantía de disponibilidad:** Dado que en Mercado Libre los vendedores independientes pausan o agotan publicaciones individuales frecuentemente, el sistema te redirige a los vendedores activos con stock en tiempo real para que nunca encuentres enlaces rotos o páginas inexistentes.
 
 ---
 

@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional
 from fastapi import APIRouter
 
-from app.adapters.ml_adapter import MLAdapter
+from app.adapters.ml_adapter import MLAdapter, build_ml_permalink
 from app.adapters.trends_adapter import TrendsAdapter
 from app.scoring.engine import compute_scores, compute_estimated_monthly_sales
 from app.schemas.analysis import ProductDetailResponse
@@ -49,11 +49,7 @@ def _to_detail(
         description=p.get("description", ""),
         leverage_score=scored.get("leverage_score"),
         is_archetype=scored.get("is_archetype", False),
-        permalink=p.get("permalink") or (
-            f"https://articulo.mercadolibre.com.mx/{p['ml_id']}"
-            if p["ml_id"].startswith("MLM")
-            else f"https://listado.mercadolibre.com.mx/{p['title']}"
-        ),
+        permalink=p.get("permalink") or build_ml_permalink(p["title"], p["ml_id"]),
     )
 
 

@@ -6,7 +6,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.adapters.ml_adapter import MLAdapter
+from app.adapters.ml_adapter import MLAdapter, build_ml_permalink
 from app.adapters.trends_adapter import TrendsAdapter
 from app.database import get_db
 from app.models.analysis import Analysis, AnalysisProduct
@@ -115,11 +115,7 @@ def search(q: str, category: Optional[str] = None, limit: int = 50, db: Session 
             trend_available=trend_available,
             leverage_score=p.get("leverage_score"),
             is_archetype=p.get("is_archetype", False),
-            permalink=p.get("permalink") or (
-                f"https://articulo.mercadolibre.com.mx/{p['ml_id']}"
-                if p["ml_id"].startswith("MLM")
-                else f"https://listado.mercadolibre.com.mx/{p['title']}"
-            ),
+            permalink=p.get("permalink") or build_ml_permalink(p["title"], p["ml_id"]),
         ))
 
     raw_gaps = detect_market_gaps(raw_products, trend_interest)

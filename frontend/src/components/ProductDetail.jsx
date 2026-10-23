@@ -1,5 +1,6 @@
 import ScoreBadge from './ScoreBadge'
 import TrendChart from './TrendChart'
+import { getMercadoLibreUrl } from '../utils/permalinks'
 
 export default function ProductDetail({ detail }) {
   // Estimated Unit Economics
@@ -9,11 +10,9 @@ export default function ProductDetail({ detail }) {
   const estMargin = Math.max(0, price - estCost - estMlFee)
   const marginPct = price > 0 ? Math.round((estMargin / price) * 100) : 0
 
-  const mlUrl =
-    detail.permalink ||
-    (detail.ml_id && String(detail.ml_id).startsWith('MLM')
-      ? `https://articulo.mercadolibre.com.mx/${detail.ml_id}`
-      : `https://listado.mercadolibre.com.mx/${encodeURIComponent(detail.title || '')}`)
+  const activeMlUrl = getMercadoLibreUrl(detail)
+  const isCatalog = detail.ml_id && String(detail.ml_id).startsWith('MLM')
+  const catalogUrl = isCatalog ? `https://www.mercadolibre.com.mx/p/${detail.ml_id}` : null
 
   return (
     <div className="space-y-6 text-gray-100">
@@ -47,17 +46,34 @@ export default function ProductDetail({ detail }) {
                 </span>
               )}
             </div>
-            <div className="mt-3">
+            <div className="mt-3.5 flex flex-wrap items-center gap-2.5">
               <a
-                href={mlUrl}
+                href={activeMlUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#F65058] to-orange-500 hover:from-[#ff6169] hover:to-orange-400 text-white font-mono text-xs font-bold transition-all shadow-[0_0_15px_rgba(246,80,88,0.35)] hover:scale-[1.02] active:scale-[0.98] group"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#F65058] to-orange-500 hover:from-[#ff6169] hover:to-orange-400 text-white font-mono text-xs font-bold transition-all shadow-[0_0_15px_rgba(246,80,88,0.35)] hover:scale-[1.02] active:scale-[0.98] group"
+                title="Abrir ofertas y vendedores activos con stock en Mercado Libre"
               >
-                <span>Ver publicación en Mercado Libre</span>
+                <span>Ver ofertas activas en Mercado Libre</span>
                 <span className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 font-bold">↗</span>
               </a>
+              {isCatalog && (
+                <a
+                  href={catalogUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-gray-300 hover:text-white font-mono text-xs transition-colors"
+                  title="Ver ficha oficial de catálogo en Mercado Libre (si sigue activa)"
+                >
+                  <span>Ficha Catálogo ({detail.ml_id})</span>
+                  <span>↗</span>
+                </a>
+              )}
             </div>
+            <p className="text-[11px] text-gray-400 mt-2 flex items-center gap-1.5 font-mono">
+              <span className="text-[#00E599] font-bold">✓</span>
+              <span>El enlace te lleva a ofertas activas con stock y vendedores vigentes en Mercado Libre México.</span>
+            </p>
           </div>
         </div>
 

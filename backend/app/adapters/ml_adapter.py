@@ -75,6 +75,33 @@ def _parse_listing_date(date_str: str | None) -> datetime | None:
 
 import hashlib
 import random
+import re
+import unicodedata
+
+
+def build_ml_permalink(title: str, ml_id: str = "", raw_permalink: str | None = None) -> str:
+    """
+    Builds an authentic, active Mercado Libre Mexico URL.
+    - If raw_permalink is a valid https:// URL on mercadolibre.com, return it.
+    - Otherwise, builds a clean slug-based search URL (https://listado.mercadolibre.com.mx/<slug>)
+      which guarantees that clicking it opens active listings with stock and current sellers on Mercado Libre Mexico.
+    """
+    if raw_permalink and raw_permalink.startswith("https://") and "mercadolibre.com" in raw_permalink:
+        return raw_permalink
+
+    text = title or ""
+    # Normalize accents (á -> a, ñ -> n, etc.)
+    text = unicodedata.normalize("NFKD", text).encode("ASCII", "ignore").decode("utf-8")
+    # Replace symbols and punctuation with spaces
+    text = re.sub(r"[^a-zA-Z0-9\s]", " ", text)
+    stopwords = {
+        "de", "para", "el", "la", "los", "las", "un", "una", "con", "en", "del",
+        "por", "y", "o", "al", "mod", "modelo", "tipo", "color"
+    }
+    tokens = [w.lower() for w in text.split() if w.lower() not in stopwords and not w.isdigit() and len(w) > 1]
+    core_tokens = tokens[:5] if tokens else ["articulos"]
+    slug = "-".join(core_tokens)
+    return f"https://listado.mercadolibre.com.mx/{slug}"
 
 
 def _calibrate_market_metrics(title: str, item_id: str) -> tuple[float, int, int]:
@@ -105,7 +132,6 @@ def _calibrate_market_metrics(title: str, item_id: str) -> tuple[float, int, int
     return price, sold, sellers
 
 
-
 def _generate_fallback_products(keyword: str, site_id: str = "MLM", limit: int = 16) -> list[dict]:
     kw = keyword.lower()
     if any(w in kw for w in ["parche", "parches", "soporte", "cable", "funda", "guantes", "cadena", "kit"]):
@@ -122,8 +148,9 @@ def _generate_fallback_products(keyword: str, site_id: str = "MLM", limit: int =
     seed = int(hashlib.md5(keyword.encode("utf-8")).hexdigest(), 16) % 100000
     rng = random.Random(seed)
 
-    brands = ["Genérico", "Importado Directo", "Pro Tech", "Pro Series", "OEM Standard", "Plus Quality", "UltraFit"]
-    qualifiers = ["Pro", "Ultra", "Universal", "Reforzado", "Económico", "Portátil", "Impermeable", "Original", "Ajustable"]
+    brands = ["Genérico", "Importado", "Pro Tech", "Pro Series", "OEM Standard", "Plus Quality", "UltraFit"]
+    qualifiers_entry = ["Reforzado", "Universal", "Económico", "Portátil", "Ajustable", "Multiusos", "Práctico"]
+    qualifiers_premium = ["Profesional", "Industrial", "Acero Inoxidable", "Alta Resistencia", "Pro Edition", "Premium Resistente"]
 
     n_entry = max(2, int(limit * 0.55))
     n_premium = limit - n_entry
@@ -134,9 +161,10 @@ def _generate_fallback_products(keyword: str, site_id: str = "MLM", limit: int =
         p_ratio = i / max(1, n_entry - 1)
         price = round(base_price + p_ratio * (base_price * 1.5), 2)
         sold = rng.randint(120, 2500) - int(p_ratio * 350)
-        title = f"{keyword.title()} {rng.choice(qualifiers)} Mod. {i+1}"
+        title = f"{keyword.title()} {rng.choice(qualifiers_entry)} {rng.choice(brands)}"
+        ml_id = f"SIM{seed % 10000:04d}{i:03d}"
         products.append({
-            "ml_id": f"SIM{seed % 10000:04d}{i:03d}",
+            "ml_id": ml_id,
             "title": title,
             "price": price,
             "sold_quantity": max(20, sold),
@@ -148,6 +176,7 @@ def _generate_fallback_products(keyword: str, site_id: str = "MLM", limit: int =
             "brand": rng.choice(brands),
             "status": "active",
             "is_simulated": True,
+            "permalink": build_ml_permalink(title, ml_id),
         })
 
     # Premium cluster (leaving a clear gap to model market void)
@@ -156,9 +185,10 @@ def _generate_fallback_products(keyword: str, site_id: str = "MLM", limit: int =
         p_ratio = j / max(1, n_premium - 1)
         price = round(gap_start + p_ratio * (max_price - gap_start), 2)
         sold = max(5, rng.randint(15, 300) - int(p_ratio * 80))
-        title = f"{keyword.title()} {rng.choice(qualifiers)} Edición Especial {rng.choice(brands)}"
+        title = f"{keyword.title()} {rng.choice(qualifiers_premium)} {rng.choice(brands)}"
+        ml_id = f"SIM{seed % 10000:04d}{n_entry + j:03d}"
         products.append({
-            "ml_id": f"SIM{seed % 10000:04d}{n_entry + j:03d}",
+            "ml_id": ml_id,
             "title": title,
             "price": price,
             "sold_quantity": sold,
@@ -170,15 +200,17 @@ def _generate_fallback_products(keyword: str, site_id: str = "MLM", limit: int =
             "brand": rng.choice(brands),
             "status": "active",
             "is_simulated": True,
+            "permalink": build_ml_permalink(title, ml_id),
         })
 
     return products
 
 
 def _generate_fallback_product_detail(ml_id: str) -> dict:
+    title = f"Producto de Referencia ({ml_id})"
     return {
         "ml_id": ml_id,
-        "title": f"Producto de Referencia ({ml_id})",
+        "title": title,
         "price": 450.0,
         "sold_quantity": 250,
         "seller_id": "seller_simulated",
@@ -189,6 +221,7 @@ def _generate_fallback_product_detail(ml_id: str) -> dict:
         "description": "Producto para análisis de mercado y validación de nicho en modo simulado.",
         "attributes": [],
         "is_simulated": True,
+        "permalink": build_ml_permalink(title, ml_id),
     }
 
 
@@ -238,9 +271,10 @@ class MLAdapter(BaseAdapter):
                     if num_sellers <= 1:
                         num_sellers = calib_sellers
 
+                title = item.get("name", item.get("title", item["id"]))
                 results.append({
                     "ml_id": item["id"],
-                    "title": item.get("name", item.get("title", item["id"])),
+                    "title": title,
                     "price": price,
                     "sold_quantity": sold_qty,
                     "seller_id": str(bb.get("seller_id", item.get("seller", {}).get("id", ""))),
@@ -251,6 +285,7 @@ class MLAdapter(BaseAdapter):
                     "brand": brand,
                     "status": item.get("status", "unknown"),
                     "is_simulated": False,
+                    "permalink": build_ml_permalink(title, item["id"], item.get("permalink") or bb.get("permalink")),
                 })
 
             cache_set(cache_key, results, CACHE_TTL)
@@ -291,9 +326,10 @@ class MLAdapter(BaseAdapter):
                 if sold_qty is None:
                     sold_qty = calib_sold
 
+            title = item.get("name", item["id"])
             result = {
                 "ml_id": item["id"],
-                "title": item.get("name", item["id"]),
+                "title": title,
                 "price": price,
                 "sold_quantity": sold_qty,
                 "seller_id": str(bb.get("seller_id", "")),
@@ -304,6 +340,7 @@ class MLAdapter(BaseAdapter):
                 "description": item.get("short_description", {}).get("content", ""),
                 "attributes": item.get("attributes", []),
                 "is_simulated": False,
+                "permalink": build_ml_permalink(title, item["id"], item.get("permalink") or bb.get("permalink")),
             }
             cache_set(cache_key, result, CACHE_TTL)
             return result

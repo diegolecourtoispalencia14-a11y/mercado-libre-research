@@ -223,8 +223,9 @@ def build_pdf():
 
     # Section 5: Enlace Directo a Mercado Libre
     story.append(Paragraph("5. Ver el Producto Directamente en Mercado Libre", h1_style))
-    story.append(Paragraph("• <b>Desde la Lista de Resultados:</b> Cada fila incluye un enlace que dice <b>\"Ver en ML ↗\"</b> para abrir el producto directamente en la tienda oficial en una pestaña nueva.", bullet_style))
-    story.append(Paragraph("• <b>Desde la Ficha Detallada:</b> En el encabezado del producto encontrarás el botón coral <b>\"Ver publicación en Mercado Libre ↗\"</b> para revisar las fotos en alta resolución, preguntas de compradores y reputación del vendedor.", bullet_style))
+    story.append(Paragraph("• <b>Desde la Lista de Resultados:</b> Cada fila incluye el enlace <b>\"Ver en ML ↗\"</b> para abrir directamente las ofertas activas con inventario disponible en Mercado Libre México en una pestaña nueva.", bullet_style))
+    story.append(Paragraph("• <b>Desde la Ficha Detallada:</b> Encontrarás el botón <b>\"Ver ofertas activas en Mercado Libre ↗\"</b> para revisar a todos los vendedores con stock y entrega inmediata. Si el artículo cuenta con código de catálogo (MLM), verás además el botón complementario <b>\"Ficha Catálogo\"</b>.", bullet_style))
+    story.append(Paragraph("• <b>Garantía de disponibilidad:</b> En Mercado Libre las publicaciones individuales se pausan o agotan frecuentemente. El enlace de la herramienta te conecta a los vendedores con stock vigente para evitar páginas inexistentes o caídas.", bullet_style))
     story.append(Spacer(1, 8))
 
     # Section 6: Calculadora de Ganancia

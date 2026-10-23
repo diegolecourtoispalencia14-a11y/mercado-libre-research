@@ -1,4 +1,5 @@
 import ScoreBadge from './ScoreBadge'
+import { getMercadoLibreUrl } from '../utils/permalinks'
 
 export default function ProductList({ products, onSelect, onCompare, selectedForCompare }) {
   if (!products.length) return null
@@ -47,17 +48,12 @@ export default function ProductList({ products, onSelect, onCompare, selectedFor
                           </span>
                         )}
                         <a
-                          href={
-                            p.permalink ||
-                            (p.ml_id && String(p.ml_id).startsWith('MLM')
-                              ? `https://articulo.mercadolibre.com.mx/${p.ml_id}`
-                              : `https://listado.mercadolibre.com.mx/${encodeURIComponent(p.title || '')}`)
-                          }
+                          href={getMercadoLibreUrl(p)}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={e => e.stopPropagation()}
                           className="inline-flex items-center gap-1 text-[11px] font-mono text-gray-400 hover:text-[#F65058] transition-colors"
-                          title="Abrir publicación en Mercado Libre"
+                          title="Abrir ofertas y vendedores activos en Mercado Libre"
                         >
                           <span>Ver en ML</span>
                           <span>↗</span>
