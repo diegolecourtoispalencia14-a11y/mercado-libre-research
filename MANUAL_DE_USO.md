@@ -53,7 +53,16 @@ Al lado del contador de productos encontrados verás el botón **"Filtrar arquet
 
 ---
 
-## 💰 5. Simulador de Ganancias y Costos (Unit Economics)
+## 🔗 5. Ver el Producto Directamente en Mercado Libre
+
+Para inspeccionar la publicación real en la tienda oficial de Mercado Libre:
+
+* **Desde la lista de resultados:** Cada fila incluye un enlace rápido que dice **`Ver en ML ↗`** para abrir la publicación en una pestaña nueva sin salir de la búsqueda.
+* **Desde la ficha detallada:** Al dar clic en cualquier producto, verás en el encabezado un botón destacado que dice **"Ver publicación en Mercado Libre ↗"**. Al hacer clic podrás ver las fotos en alta resolución, preguntas de los clientes y reputación del vendedor.
+
+---
+
+## 💰 6. Simulador de Ganancias y Costos (Unit Economics)
 
 Cada vez que hagas clic en cualquier producto de la lista, se abrirá su **Ficha Detallada**. En la parte superior encontrarás la **Calculadora de Rentabilidad en Vivo**:
 

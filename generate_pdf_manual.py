@@ -221,8 +221,14 @@ def build_pdf():
     story.append(Paragraph("• Para volver a ver el catálogo completo, solo haz clic de nuevo sobre el botón.", bullet_style))
     story.append(Spacer(1, 8))
 
-    # Section 5: Calculadora de Ganancia
-    story.append(Paragraph("5. Calculadora de Ganancia y Costos en Vivo (Unit Economics)", h1_style))
+    # Section 5: Enlace Directo a Mercado Libre
+    story.append(Paragraph("5. Ver el Producto Directamente en Mercado Libre", h1_style))
+    story.append(Paragraph("• <b>Desde la Lista de Resultados:</b> Cada fila incluye un enlace que dice <b>\"Ver en ML ↗\"</b> para abrir el producto directamente en la tienda oficial en una pestaña nueva.", bullet_style))
+    story.append(Paragraph("• <b>Desde la Ficha Detallada:</b> En el encabezado del producto encontrarás el botón coral <b>\"Ver publicación en Mercado Libre ↗\"</b> para revisar las fotos en alta resolución, preguntas de compradores y reputación del vendedor.", bullet_style))
+    story.append(Spacer(1, 8))
+
+    # Section 6: Calculadora de Ganancia
+    story.append(Paragraph("6. Calculadora de Ganancia y Costos en Vivo (Unit Economics)", h1_style))
     story.append(Paragraph("Al hacer clic en cualquier producto de la tabla, entrarás a su ficha técnica con la calculadora en tiempo real:", body_style))
 
     calc_box = [
@@ -242,23 +248,23 @@ def build_pdf():
     story.append(t_calc)
     story.append(Spacer(1, 8))
 
-    # Section 6: Comparador
-    story.append(Paragraph("6. Cómo Comparar Productos Frente a Frente", h1_style))
+    # Section 7: Comparador
+    story.append(Paragraph("7. Cómo Comparar Productos Frente a Frente", h1_style))
     story.append(Paragraph("1. Marca la casilla <b>\"Comparar\"</b> en dos o más artículos de la lista.", bullet_style))
     story.append(Paragraph("2. Haz clic en el botón superior <b>\"Comparar X productos\"</b>.", bullet_style))
     story.append(Paragraph("3. Se abrirá una tabla comparativa donde verás lado a lado: precios, ventas estimadas al mes, nivel de demanda, nivel de competencia y tendencia histórica.", bullet_style))
     story.append(Spacer(1, 8))
 
-    # Section 7: Guardar y Exportar Reportes
-    story.append(Paragraph("7. Guardar Análisis y Descargar Reportes", h1_style))
+    # Section 8: Guardar y Exportar Reportes
+    story.append(Paragraph("8. Guardar Análisis y Descargar Reportes", h1_style))
     story.append(Paragraph("• <b>Guardar Estudio:</b> Tras realizar una búsqueda, haz clic en <b>\"Guardar análisis\"</b> y ponle un nombre claro (ejemplo: <i>Hamacas Mayas — Octubre 2026</i>).", bullet_style))
     story.append(Paragraph("• <b>Consultar Guardados:</b> En el menú superior haz clic en <b>\"REPORTES\"</b> para ver todo el historial.", bullet_style))
     story.append(Paragraph("• <b>Exportar a Excel (CSV):</b> Haz clic en el botón <b>CSV</b> para descargar los datos numéricos y abrirlos en Excel o Google Sheets.", bullet_style))
     story.append(Paragraph("• <b>Exportar a PDF:</b> Haz clic en el botón <b>PDF</b> para descargar un resumen formal listo para imprimir o enviar.", bullet_style))
     story.append(Spacer(1, 8))
 
-    # Section 8: Salir
-    story.append(Paragraph("8. Cierre de Sesión Seguro", h1_style))
+    # Section 9: Salir
+    story.append(Paragraph("9. Cierre de Sesión Seguro", h1_style))
     story.append(Paragraph("Al terminar tus actividades, haz clic en el botón <b>\"Salir\"</b> en la esquina superior derecha junto a tu nombre de usuario para cerrar tu sesión.", body_style))
 
     doc.build(story, canvasmaker=NumberedCanvas)
