@@ -249,23 +249,32 @@ def build_pdf():
     story.append(t_calc)
     story.append(Spacer(1, 8))
 
-    # Section 7: Comparador
-    story.append(Paragraph("7. Cómo Comparar Productos Frente a Frente", h1_style))
+    # Section 7: Radar de Oportunidades 24/7
+    story.append(Paragraph("7. Radar de Oportunidades 24/7 (Costo Objetivo de Proveedor)", h1_style))
+    story.append(Paragraph("En el menú superior encontrarás la pestaña <b>\"RADAR 24/7\"</b>. Es un motor autónomo que trabaja en segundo plano rastreando el mercado las 24 horas:", body_style))
+    story.append(Paragraph("• <b>Rastreo Automático:</b> Monitorea nichos estratégicos continuamente y solo guarda productos con <b>Score Alto (≥ 7.5)</b>.", bullet_style))
+    story.append(Paragraph("• <b>Costo Máximo Proveedor (≤ $ MXN):</b> Te indica exactamente cuánto es lo máximo que debes pagarle al fabricante por pieza para garantizar un <b>30% de ganancia neta libre</b> tras comisiones, envío e impuestos.", bullet_style))
+    story.append(Paragraph("• <b>Regla de Oro con Proveedores:</b> Si el fabricante te cotiza igual o menor a esta cifra, el producto es rentable de inmediato. Si te pide más, se descarta.", bullet_style))
+    story.append(Paragraph("• <b>Botón \"Escanear Ahora\":</b> Puedes forzar un rastreo instantáneo en cualquier momento.", bullet_style))
+    story.append(Spacer(1, 8))
+
+    # Section 8: Comparador
+    story.append(Paragraph("8. Cómo Comparar Productos Frente a Frente", h1_style))
     story.append(Paragraph("1. Marca la casilla <b>\"Comparar\"</b> en dos o más artículos de la lista.", bullet_style))
     story.append(Paragraph("2. Haz clic en el botón superior <b>\"Comparar X productos\"</b>.", bullet_style))
     story.append(Paragraph("3. Se abrirá una tabla comparativa donde verás lado a lado: precios, ventas estimadas al mes, nivel de demanda, nivel de competencia y tendencia histórica.", bullet_style))
     story.append(Spacer(1, 8))
 
-    # Section 8: Guardar y Exportar Reportes
-    story.append(Paragraph("8. Guardar Análisis y Descargar Reportes", h1_style))
+    # Section 9: Guardar y Exportar Reportes
+    story.append(Paragraph("9. Guardar Análisis y Descargar Reportes", h1_style))
     story.append(Paragraph("• <b>Guardar Estudio:</b> Tras realizar una búsqueda, haz clic en <b>\"Guardar análisis\"</b> y ponle un nombre claro (ejemplo: <i>Hamacas Mayas — Octubre 2026</i>).", bullet_style))
     story.append(Paragraph("• <b>Consultar Guardados:</b> En el menú superior haz clic en <b>\"REPORTES\"</b> para ver todo el historial.", bullet_style))
     story.append(Paragraph("• <b>Exportar a Excel (CSV):</b> Haz clic en el botón <b>CSV</b> para descargar los datos numéricos y abrirlos en Excel o Google Sheets.", bullet_style))
     story.append(Paragraph("• <b>Exportar a PDF:</b> Haz clic en el botón <b>PDF</b> para descargar un resumen formal listo para imprimir o enviar.", bullet_style))
     story.append(Spacer(1, 8))
 
-    # Section 9: Salir
-    story.append(Paragraph("9. Cierre de Sesión Seguro", h1_style))
+    # Section 10: Salir
+    story.append(Paragraph("10. Cierre de Sesión Seguro", h1_style))
     story.append(Paragraph("Al terminar tus actividades, haz clic en el botón <b>\"Salir\"</b> en la esquina superior derecha junto a tu nombre de usuario para cerrar tu sesión.", body_style))
 
     doc.build(story, canvasmaker=NumberedCanvas)

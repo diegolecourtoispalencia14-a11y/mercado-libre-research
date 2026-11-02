@@ -4,14 +4,43 @@ from fastapi import FastAPI, Depends, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+from contextlib import asynccontextmanager
+from apscheduler.schedulers.background import BackgroundScheduler
+
 from app.security_middleware import SecurityHeadersMiddleware, api_rate_limiter
-from app.routers import search, analyze, compare, reports, auth
+from app.routers import search, analyze, compare, reports, auth, radar
 from app.routers.auth import get_current_user
+from app.services.opportunity_scanner import scanner_service
+
+scheduler = BackgroundScheduler()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Start 24/7 background scanner (every 4 hours)
+    try:
+        scheduler.add_job(
+            scanner_service.run_scan,
+            "interval",
+            hours=4,
+            id="radar_market_scan",
+            replace_existing=True,
+        )
+        scheduler.start()
+    except Exception as exc:
+        pass
+    yield
+    try:
+        scheduler.shutdown(wait=False)
+    except Exception:
+        pass
+
 
 app = FastAPI(
     title="Ecommerce Research API - Flamante Lab",
     version="1.0.0",
     description="Motor algorítmico de investigación de productos y detección de vacíos de mercado",
+    lifespan=lifespan,
 )
 
 # 1. OWASP Top 10 Security Headers Middleware
@@ -48,6 +77,7 @@ app.include_router(search.router, dependencies=[Depends(get_current_user)])
 app.include_router(analyze.router, dependencies=[Depends(get_current_user)])
 app.include_router(compare.router, dependencies=[Depends(get_current_user)])
 app.include_router(reports.router, dependencies=[Depends(get_current_user)])
+app.include_router(radar.router, dependencies=[Depends(get_current_user)])
 
 
 @app.get("/health")

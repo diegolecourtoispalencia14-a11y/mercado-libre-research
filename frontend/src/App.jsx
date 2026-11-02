@@ -3,6 +3,7 @@ import SearchPage from './pages/SearchPage'
 import DetailPage from './pages/DetailPage'
 import ComparePage from './pages/ComparePage'
 import ReportsPage from './pages/ReportsPage'
+import RadarPage from './pages/RadarPage'
 import LoginPage from './pages/LoginPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider, useAuth } from './context/AuthContext'
@@ -14,6 +15,7 @@ function Navigation() {
   const isSearch = location.pathname === '/'
   const isReports = location.pathname === '/reports'
   const isCompare = location.pathname === '/compare'
+  const isRadar = location.pathname === '/radar'
   const isLogin = location.pathname === '/login'
 
   return (
@@ -46,6 +48,17 @@ function Navigation() {
               }`}
             >
               RESEARCH
+            </Link>
+            <Link
+              to="/radar"
+              className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all flex items-center gap-1.5 ${
+                isRadar
+                  ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]'
+                  : 'text-gray-400 hover:text-white hover:bg-white/[0.05]'
+              }`}
+            >
+              <span className={`w-1.5 h-1.5 rounded-full ${isRadar ? 'bg-white' : 'bg-emerald-400'} animate-pulse`}></span>
+              <span>RADAR 24/7</span>
             </Link>
             <Link
               to="/reports"
@@ -149,6 +162,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <ReportsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/radar"
+              element={
+                <ProtectedRoute>
+                  <RadarPage />
                 </ProtectedRoute>
               }
             />

@@ -16,6 +16,7 @@ dependencies = [
     "pytrends>=4.9",
     "pydantic-settings>=2.3",
     "reportlab>=4.2",
+    "apscheduler>=3.10",
 ]
 
 [project.optional-dependencies]

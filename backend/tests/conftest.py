@@ -3,6 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.database import Base
 from app.config import settings
+import app.models  # noqa: F401 - ensure all tables are registered with Base.metadata
 
 TEST_DB_URL = "sqlite:///:memory:"
 

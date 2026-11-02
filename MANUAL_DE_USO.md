@@ -78,7 +78,19 @@ Cada vez que hagas clic en cualquier producto de la lista, se abrirá su **Ficha
 
 ---
 
-## ⚖️ 6. Cómo Comparar Productos Frente a Frente
+## 📡 7. Radar de Oportunidades 24/7 (Costo Objetivo de Proveedor)
+
+En el menú superior encontrarás la pestaña **"RADAR 24/7"** con una luz verde parpadeante. Esta sección es un motor autónomo que trabaja en segundo plano rastreando el mercado las 24 horas:
+
+### ¿Para qué sirve?
+* **Encuentra oportunidades solo:** No necesitas estar buscando producto por producto todo el día. El sistema monitorea nichos estratégicos (herramientas, hogar, motos, ciclismo, iluminación, etc.) y solo guarda artículos con **Score de Oportunidad alto (≥ 7.5)**.
+* **Costo Máximo Proveedor (≤ $ MXN):** Cada tarjeta te muestra en un recuadro verde cuánto es lo máximo que debes pagarle al fabricante o distribuidor por pieza para garantizar un **30% de ganancia neta libre** (después de pagar la comisión de Mercado Libre, el envío gratis obligatorio y las retenciones fiscales).
+* **Cómo usarlo en la práctica:** Cuando hables por teléfono o WhatsApp con un proveedor, compara su cotización contra el **Costo Máx. Proveedor**. Si el proveedor te cobra esa cantidad o menos, el negocio es rentable de inmediato. Si te cobra más, se descarta.
+* **Botón "Escanear Ahora":** Puedes hacer clic en este botón en cualquier momento para forzar un rastreo inmediato en las categorías diana.
+
+---
+
+## ⚖️ 8. Cómo Comparar Productos Frente a Frente
 
 Si tienes dudas entre qué modelo, variante o proveedor conviene más:
 
@@ -93,7 +105,7 @@ Si tienes dudas entre qué modelo, variante o proveedor conviene más:
 
 ---
 
-## 📁 7. Cómo Guardar tus Análisis y Descargar Reportes
+## 📁 9. Cómo Guardar tus Análisis y Descargar Reportes
 
 Para presentarle la información al equipo o respaldar tus hallazgos:
 
@@ -105,6 +117,6 @@ Para presentarle la información al equipo o respaldar tus hallazgos:
 
 ---
 
-## 🚪 8. Cerrar Sesión
+## 🚪 10. Cerrar Sesión
 
 Cuando termines tu jornada o dejes de usar la herramienta, haz clic en el botón **"Salir"** ubicado en la esquina superior derecha junto a tu nombre de usuario para cerrar tu sesión de forma segura.
