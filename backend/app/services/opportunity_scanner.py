@@ -9,7 +9,11 @@ from app.adapters.ml_adapter import MLAdapter
 from app.adapters.trends_adapter import TrendsAdapter
 from app.database import SessionLocal
 from app.models.opportunity import MarketOpportunity
-from app.scoring.engine import compute_scores, compute_estimated_monthly_sales
+from app.scoring.engine import (
+    compute_scores,
+    compute_estimated_monthly_sales,
+    detect_market_gaps,
+)
 from app.scoring.economics import compute_reverse_unit_economics
 
 logger = logging.getLogger(__name__)
@@ -62,17 +66,26 @@ class OpportunityScannerService:
                         p["trend_interest"] = trend_interest
 
                     scored_products = compute_scores(raw_products)
+                    raw_gaps = detect_market_gaps(raw_products, trend_interest)
 
                     for p in scored_products:
                         score = p.get("score", 0.0)
                         sold_qty = p.get("sold_quantity") or 0
                         is_archetype = p.get("is_archetype", False)
+                        lev_score = p.get("leverage_score")
 
                         # Strict criteria: Score >= min_score OR key archetype with solid score
                         if score >= min_score or (is_archetype and score >= 6.0):
                             price = float(p.get("price") or 0)
                             if price < 50:
                                 continue
+
+                            # Find matching market gap if any
+                            matching_gap = None
+                            for g in raw_gaps:
+                                if g["price_min"] <= price <= g["price_max"]:
+                                    matching_gap = g["gap_type"]
+                                    break
 
                             econ = compute_reverse_unit_economics(
                                 retail_price=price,
@@ -105,7 +118,11 @@ class OpportunityScannerService:
                                 existing.demand_score = p.get("demand_score")
                                 existing.competition_score = p.get("competition_score", 0)
                                 existing.estimated_monthly_sales = est_sales
+                                existing.is_archetype = is_archetype
+                                existing.leverage_score = lev_score
+                                existing.gap_type = matching_gap
                                 existing.detected_at = datetime.now(timezone.utc)
+                                new_or_updated += 1
                             else:
                                 opp = MarketOpportunity(
                                     ml_id=p["ml_id"],
@@ -118,6 +135,9 @@ class OpportunityScannerService:
                                     score=score,
                                     demand_score=p.get("demand_score"),
                                     competition_score=p.get("competition_score", 0),
+                                    is_archetype=is_archetype,
+                                    leverage_score=lev_score,
+                                    gap_type=matching_gap,
                                     permalink=p.get("permalink") or f"https://listado.mercadolibre.com.mx/{p['title']}",
                                     thumbnail_url=p.get("thumbnail_url", ""),
                                     status="active",

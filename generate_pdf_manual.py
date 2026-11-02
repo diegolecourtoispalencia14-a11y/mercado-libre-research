@@ -168,7 +168,7 @@ def build_pdf():
 
     cred_data = [
         [Paragraph("Dato de Acceso", table_header_style), Paragraph("Información para Ingresar", table_header_style), Paragraph("Notas Importantes", table_header_style)],
-        [Paragraph("Enlace Web", table_cell_style), Paragraph("https://wrapped-thanksgiving-date-dolls.trycloudflare.com", code_style), Paragraph("Acceso directo seguro vía navegador.", table_cell_style)],
+        [Paragraph("Enlace Web", table_cell_style), Paragraph("https://scholarships-warming-entertainment-improvements.trycloudflare.com", code_style), Paragraph("Acceso directo seguro vía navegador.", table_cell_style)],
         [Paragraph("Usuario", table_cell_style), Paragraph("admin", code_style), Paragraph("Cuenta de acceso con privilegios completos.", table_cell_style)],
         [Paragraph("Contraseña", table_cell_style), Paragraph("Admin!Riviera2026", code_style), Paragraph("Respetar mayúsculas y caracteres especiales.", table_cell_style)],
         [Paragraph("Sesión Activa", table_cell_style), Paragraph("8 Horas continuas", table_cell_style), Paragraph("Tras 8h de inactividad, vuelve a iniciar sesión.", table_cell_style)],
@@ -250,9 +250,12 @@ def build_pdf():
     story.append(Spacer(1, 8))
 
     # Section 7: Radar de Oportunidades 24/7
-    story.append(Paragraph("7. Radar de Oportunidades 24/7 (Costo Objetivo de Proveedor)", h1_style))
-    story.append(Paragraph("En el menú superior encontrarás la pestaña <b>\"RADAR 24/7\"</b>. Es un motor autónomo que trabaja en segundo plano rastreando el mercado las 24 horas:", body_style))
-    story.append(Paragraph("• <b>Rastreo Automático:</b> Monitorea nichos estratégicos continuamente y solo guarda productos con <b>Score Alto (≥ 7.5)</b>.", bullet_style))
+    story.append(Paragraph("7. Radar de Oportunidades 24/7 (Costo Objetivo, Arquetipos y Vacíos)", h1_style))
+    story.append(Paragraph("En el menú superior encontrarás la pestaña <b>\"RADAR 24/7\"</b>. Es un motor autónomo que trabaja en segundo plano rastreando el mercado las 24 horas y combinando los modelos matemáticos de la plataforma:", body_style))
+    story.append(Paragraph("• <b>Rastreo Automático Continuo:</b> Monitorea nichos estratégicos y selecciona productos viables con <b>Score Alto (≥ 7.5)</b> o arquetipos de alto apalancamiento.", bullet_style))
+    story.append(Paragraph("• <b>Insignia Dorada ⭐ Arquetipo Clave (Leverage Score):</b> Identifica a los líderes estructurales que definen el mercado frente a publicaciones repetidas o de copia. Te indica qué productos marcan la verdadera referencia de los compradores.", bullet_style))
+    story.append(Paragraph("• <b>Insignia Morada (Vacío de Mercado):</b> Indica que el artículo se sitúa exactamente dentro de una brecha desatendida (ej. <i>Gama Media Estratégica</i> o <i>Gama Entrada Accesible</i>) donde la competencia es débil y hay alta demanda.", bullet_style))
+    story.append(Paragraph("• <b>Filtro Rápido \"Solo Arquetipos Clave\":</b> Botón en la barra de filtros para aislar de un solo clic únicamente las oportunidades estructurales de mayor peso.", bullet_style))
     story.append(Paragraph("• <b>Costo Máximo Proveedor (≤ $ MXN):</b> Te indica exactamente cuánto es lo máximo que debes pagarle al fabricante por pieza para garantizar un <b>30% de ganancia neta libre</b> tras comisiones, envío e impuestos.", bullet_style))
     story.append(Paragraph("• <b>Regla de Oro con Proveedores:</b> Si el fabricante te cotiza igual o menor a esta cifra, el producto es rentable de inmediato. Si te pide más, se descarta.", bullet_style))
     story.append(Paragraph("• <b>Botón \"Escanear Ahora\":</b> Puedes forzar un rastreo instantáneo en cualquier momento.", bullet_style))

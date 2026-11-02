@@ -10,11 +10,12 @@ export default function RadarPage() {
   const [loading, setLoading] = useState(true)
   const [scanning, setScanning] = useState(false)
   const [filter, setFilter] = useState('active')
+  const [archetypeOnly, setArchetypeOnly] = useState(false)
   const [actionMessage, setActionMessage] = useState('')
 
   const loadData = async () => {
     try {
-      const [opps, st] = await Promise.all([getOpportunities(filter), getRadarStatus()])
+      const [opps, st] = await Promise.all([getOpportunities(filter, archetypeOnly), getRadarStatus()])
       setOpportunities(opps)
       setStatusInfo(st)
     } catch (err) {
@@ -26,7 +27,7 @@ export default function RadarPage() {
 
   useEffect(() => {
     loadData()
-  }, [filter])
+  }, [filter, archetypeOnly])
 
   const handleTriggerScan = async () => {
     setScanning(true)
@@ -124,37 +125,51 @@ export default function RadarPage() {
         </div>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-white/[0.08] pb-3 text-xs font-mono">
+      {/* Filter Tabs & Archetype Toggle */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-3 text-xs font-mono">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setFilter('active')}
+            className={`px-3 py-1.5 rounded-lg transition-colors ${
+              filter === 'active'
+                ? 'bg-white/10 text-white font-bold border border-white/20'
+                : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            Activas
+          </button>
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-3 py-1.5 rounded-lg transition-colors ${
+              filter === 'all'
+                ? 'bg-white/10 text-white font-bold border border-white/20'
+                : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            Todas
+          </button>
+          <button
+            onClick={() => setFilter('dismissed')}
+            className={`px-3 py-1.5 rounded-lg transition-colors ${
+              filter === 'dismissed'
+                ? 'bg-white/10 text-white font-bold border border-white/20'
+                : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            Descartadas
+          </button>
+        </div>
+
         <button
-          onClick={() => setFilter('active')}
-          className={`px-3 py-1.5 rounded-lg transition-colors ${
-            filter === 'active'
-              ? 'bg-white/10 text-white font-bold border border-white/20'
-              : 'text-gray-400 hover:text-white'
+          onClick={() => setArchetypeOnly(!archetypeOnly)}
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+            archetypeOnly
+              ? 'bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold shadow-md shadow-amber-500/10'
+              : 'bg-white/[0.03] text-gray-400 hover:text-white border border-white/[0.08]'
           }`}
         >
-          Activas
-        </button>
-        <button
-          onClick={() => setFilter('all')}
-          className={`px-3 py-1.5 rounded-lg transition-colors ${
-            filter === 'all'
-              ? 'bg-white/10 text-white font-bold border border-white/20'
-              : 'text-gray-400 hover:text-white'
-          }`}
-        >
-          Todas
-        </button>
-        <button
-          onClick={() => setFilter('dismissed')}
-          className={`px-3 py-1.5 rounded-lg transition-colors ${
-            filter === 'dismissed'
-              ? 'bg-white/10 text-white font-bold border border-white/20'
-              : 'text-gray-400 hover:text-white'
-          }`}
-        >
-          Descartadas
+          <span>⭐</span>
+          <span>Solo Arquetipos Clave (SVD)</span>
         </button>
       </div>
 
@@ -200,6 +215,16 @@ export default function RadarPage() {
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">
                       {opp.category_name}
                     </span>
+                    {opp.is_archetype && (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 font-bold flex items-center gap-1">
+                        ⭐ Arquetipo Clave (Leverage: {opp.leverage_score != null ? opp.leverage_score.toFixed(1) : 'Alta'}/10)
+                      </span>
+                    )}
+                    {opp.gap_type && (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold">
+                        Vacío: {opp.gap_type}
+                      </span>
+                    )}
                     <span className="text-[10px] font-mono text-gray-500">
                       ID: {opp.ml_id}
                     </span>
@@ -216,6 +241,16 @@ export default function RadarPage() {
                     <span>
                       Ventas est.: <b className="text-white">~{Math.round(opp.estimated_monthly_sales || 0)}/mes</b>
                     </span>
+                    {opp.demand_score != null && (
+                      <span className="text-emerald-400/90">
+                        Demanda: <b className="text-white">{opp.demand_score}/10</b>
+                      </span>
+                    )}
+                    {opp.competition_score != null && (
+                      <span className="text-orange-400/90">
+                        Competencia: <b className="text-white">{opp.competition_score}/10</b>
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

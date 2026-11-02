@@ -1,7 +1,11 @@
 import { apiFetch } from './client'
 
-export async function getOpportunities(status = 'active') {
-  return apiFetch(`/radar?status=${encodeURIComponent(status)}`)
+export async function getOpportunities(status = 'active', archetypeOnly = false) {
+  const params = new URLSearchParams({ status })
+  if (archetypeOnly) {
+    params.set('archetype_only', 'true')
+  }
+  return apiFetch(`/radar?${params.toString()}`)
 }
 
 export async function getRadarStatus() {

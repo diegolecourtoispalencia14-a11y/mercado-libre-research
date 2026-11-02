@@ -24,6 +24,19 @@ describe('Radar API Client', () => {
     )
   })
 
+  it('getOpportunities requests /api/radar with archetype_only when set', async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => [],
+    })
+
+    await getOpportunities('active', true)
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/api/radar?status=active&archetype_only=true',
+      expect.anything()
+    )
+  })
+
   it('getRadarStatus requests /api/radar/status', async () => {
     const mockStatus = { is_running: false, total_opportunities: 5, active_opportunities: 5, categories_monitored: [] }
     global.fetch = vi.fn().mockResolvedValue({

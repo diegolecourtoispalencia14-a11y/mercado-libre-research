@@ -19,6 +19,9 @@ class OpportunityResponse(BaseModel):
     score: float
     demand_score: Optional[float] = None
     competition_score: float
+    is_archetype: bool = False
+    leverage_score: Optional[float] = None
+    gap_type: Optional[str] = None
     permalink: str
     thumbnail_url: str
     status: str

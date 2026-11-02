@@ -21,16 +21,20 @@ router = APIRouter(prefix="/radar", tags=["radar"])
 @router.get("", response_model=List[OpportunityResponse])
 def get_opportunities(
     status: Optional[str] = "active",
+    archetype_only: bool = False,
     limit: int = 50,
     db: Session = Depends(get_db),
 ):
     """
-    Returns high-yield e-commerce opportunities filtered by status.
+    Returns high-yield e-commerce opportunities filtered by status and archetypes.
     Ordered by Score (descending) and detection timestamp.
     """
     query = db.query(MarketOpportunity)
     if status and status != "all":
         query = query.filter(MarketOpportunity.status == status)
+
+    if archetype_only:
+        query = query.filter(MarketOpportunity.is_archetype.is_(True))
 
     return query.order_by(
         desc(MarketOpportunity.score), desc(MarketOpportunity.detected_at)

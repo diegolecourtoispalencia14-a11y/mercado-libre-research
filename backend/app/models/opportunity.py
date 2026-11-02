@@ -21,6 +21,9 @@ class MarketOpportunity(Base):
     score: Mapped[float] = mapped_column(Float)
     demand_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     competition_score: Mapped[float] = mapped_column(Float)
+    is_archetype: Mapped[bool] = mapped_column(default=False)
+    leverage_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    gap_type: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     permalink: Mapped[str] = mapped_column(String(1000))
     thumbnail_url: Mapped[str] = mapped_column(String(1000))
     status: Mapped[str] = mapped_column(String(20), default="active", index=True)  # active, dismissed, contacted

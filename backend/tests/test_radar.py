@@ -88,28 +88,62 @@ def test_radar_endpoints(test_setup):
         score=8.5,
         demand_score=8.0,
         competition_score=4.0,
+        is_archetype=True,
+        leverage_score=8.8,
+        gap_type="Gama Media Estratégica",
         permalink="https://listado.mercadolibre.com.mx/repisa-flotante",
         thumbnail_url="https://http2.mlstatic.com/test.webp",
         status="active",
         detected_at=datetime.now(timezone.utc),
     )
     db.add(opp)
+
+    opp2 = MarketOpportunity(
+        ml_id="MLMTEST002",
+        title="Soporte Genérico",
+        category_name="Hogar y Muebles",
+        price=120.0,
+        target_supplier_cost=30.0,
+        target_profit=36.0,
+        estimated_monthly_sales=20.0,
+        score=6.0,
+        demand_score=5.0,
+        competition_score=6.0,
+        is_archetype=False,
+        leverage_score=2.1,
+        gap_type=None,
+        permalink="https://listado.mercadolibre.com.mx/soporte",
+        thumbnail_url="https://http2.mlstatic.com/test2.webp",
+        status="active",
+        detected_at=datetime.now(timezone.utc),
+    )
+    db.add(opp2)
     db.commit()
 
-    # 1. Get opportunities
+    # 1. Get opportunities (all)
     resp = client.get("/radar")
     assert resp.status_code == 200
     data = resp.json()
-    assert len(data) >= 1
+    assert len(data) == 2
     assert data[0]["ml_id"] == "MLMTEST001"
     assert data[0]["target_supplier_cost"] == 110.0
+    assert data[0]["is_archetype"] is True
+    assert data[0]["leverage_score"] == 8.8
+    assert data[0]["gap_type"] == "Gama Media Estratégica"
+
+    # 1b. Filter by archetype_only
+    arch_resp = client.get("/radar?archetype_only=true")
+    assert arch_resp.status_code == 200
+    arch_data = arch_resp.json()
+    assert len(arch_data) == 1
+    assert arch_data[0]["ml_id"] == "MLMTEST001"
 
     # 2. Status endpoint
     s_resp = client.get("/radar/status")
     assert s_resp.status_code == 200
     s_data = s_resp.json()
-    assert s_data["total_opportunities"] >= 1
-    assert s_data["active_opportunities"] >= 1
+    assert s_data["total_opportunities"] >= 2
+    assert s_data["active_opportunities"] >= 2
 
     # 3. Patch status to dismissed
     p_resp = client.patch(f"/radar/{opp.id}", json={"status": "dismissed", "notes": "Costo de envío alto"})
